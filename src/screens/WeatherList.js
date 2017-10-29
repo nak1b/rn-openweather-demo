@@ -4,7 +4,7 @@ import { ListView, TouchableOpacity, ActivityIndicator, StyleSheet, View, Text }
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import { fetchWeather } from '../actions/'
+import { fetchWeather, fetchForecast } from '../actions/'
 
 
 class WeatherList extends Component {
@@ -32,21 +32,26 @@ class WeatherList extends Component {
     this.dataSource = ds.cloneWithRows(weatherList)
   }
 
-  weatherItemClicked(data) {
+  weatherItemClicked(city, temp) {
     const { navigate } = this.props.navigation;
-    navigate('WeatherDetail')
+
+    this.props.fetchForecast(city)
+    navigate('WeatherDetail', {
+      selectedCity: city,
+      currentTemp: temp
+    })
   }
 
   renderWeatherItem(data) {
     const temp = `${Math.round(data.main.temp)}°C`
-    const location = `${data.name}, ${data.sys.country}`
+    const location = `${data.name},${data.sys.country}`
     const { navigate } = this.props;
 
     return (
       <TouchableOpacity
         style={styles.weatherItem}
         activeOpacity={0.6}
-        onPress={() => this.weatherItemClicked(data)}>
+        onPress={() => this.weatherItemClicked(location, temp)}>
         <Text style={styles.locationText}>{location}</Text>
         <Text style={styles.tempText}>{temp}</Text>
       </TouchableOpacity>
@@ -108,7 +113,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
-    fetchWeather
+    fetchWeather,
+    fetchForecast
   }, dispatch)
 }
 

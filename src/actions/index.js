@@ -3,6 +3,7 @@ import * as util from '../utils'
 const WEATHER_API_KEY = 'd08731f8d3c76ec8400f8aa49de618af'
 
 export const WEATHERS_FETCH_SUCCESS = 'weatherFetchSuccess'
+export const FORECAST_FETCH_SUCCESS = 'forecastFetchSuccess'
 
 const CITIES_CODE = [
   {name: 'Mumbai', id: 1275339},
@@ -28,9 +29,30 @@ export const fetchWeather = () => {
   }
 }
 
+export const fetchForecast = (city) => {
+  return dispatch => {
+    const URL = `http://api.openweathermap.org/data/2.5/forecast?q==${city}&appid=${WEATHER_API_KEY}`
+    fetch(URL)
+      .then(res => {
+        const data = JSON.parse(res._bodyInit).list
+        forecastFetchSuccess(dispatch, data)
+      })
+      .catch(err => {
+        console.log(`Error fetching weather for city list: ${err}`)
+      })
+  }
+}
+
 const weatherFetchSuccess = (dispatch, data) => {
   dispatch({
     type: WEATHERS_FETCH_SUCCESS,
+    payload: data
+  })
+}
+
+const forecastFetchSuccess = (dispatch, data) => {
+  dispatch({
+    type: FORECAST_FETCH_SUCCESS,
     payload: data
   })
 }
