@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, ActivityIndicator, ListView } from 'react-nativ
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
+import Loading from '../components/Loading'
 
 class WeatherDetail extends React.Component {
   static navigationOptions = {
@@ -45,11 +46,7 @@ class WeatherDetail extends React.Component {
   renderForecast() {
 		const { weatherDetail } = this.props;
 
-		if(!weatherDetail || weatherDetail.length === 0) return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size='large' />
-      </View>
-    )
+		if(!weatherDetail || weatherDetail.length === 0) return <Loading />
 
 		return (
 			<ListView
