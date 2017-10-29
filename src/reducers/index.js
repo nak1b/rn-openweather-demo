@@ -1,9 +1,6 @@
 import { combineReducers } from 'redux'
-
-const test = (state, action) => {
- 	return null
-}
+import WeatherReducer from './WeatherReducer'
 
 export default combineReducers({
-  test
+  weather: WeatherReducer
 })
