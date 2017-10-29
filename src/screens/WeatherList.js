@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { ListView, StyleSheet, View, Text, Button } from 'react-native'
+import { ListView, TouchableOpacity, ActivityIndicator, StyleSheet, View, Text } from 'react-native'
 
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import { fetchWeather } from '../actions/'
-import _ from 'lodash'
+
 
 class WeatherList extends Component {
   static navigationOptions = {
@@ -32,29 +32,36 @@ class WeatherList extends Component {
     this.dataSource = ds.cloneWithRows(weatherList)
   }
 
+  weatherItemClicked(data) {
+    const { navigate } = this.props.navigation;
+    navigate('WeatherDetail')
+  }
+
   renderWeatherItem(data) {
     const temp = `${Math.round(data.main.temp)}°C`
     const location = `${data.name}, ${data.sys.country}`
+    const { navigate } = this.props;
 
     return (
-      <View style={styles.weatherItem}>
+      <TouchableOpacity
+        style={styles.weatherItem}
+        activeOpacity={0.6}
+        onPress={() => this.weatherItemClicked(data)}>
         <Text style={styles.locationText}>{location}</Text>
         <Text style={styles.tempText}>{temp}</Text>
-      </View>
+      </TouchableOpacity>
     )
   }
 
   renderContactList() {
 		const { weatherList } = this.props;
 
-		if(!weatherList || weatherList.length === 0) return <View />
+		if(!weatherList || weatherList.length === 0) return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size='large' />
+      </View>
+    )
 
-    // <Button
-    //   title="Go to Weather Details"
-    //   onPress={() =>
-    //     navigate('WeatherDetail')
-    //   }
-    // />
 		return (
 			<ListView
 				enableEmptySections
@@ -65,8 +72,6 @@ class WeatherList extends Component {
 	}
 
   render() {
-    const { navigate } = this.props.navigation;
-
     return (
       this.renderContactList()
     )
